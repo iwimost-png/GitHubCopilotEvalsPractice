@@ -1,0 +1,14 @@
+{
+  "name": "github-copilot-evals-practice",
+  "version": "1.0.0",
+  "description": "Example and practice repository for GitHub Copilot Evals",
+  "scripts": {
+    "lint:skills": "vally lint skills",
+    "lint:evals": "vally lint -e evals/commit-helper.eval.yaml",
+    "lint": "npm run lint:skills && npm run lint:evals",
+    "eval:smoke": "vally eval -e evals/commit-helper.eval.yaml"
+  },
+  "devDependencies": {
+    "@microsoft/vally-cli": "^0.21.0"
+  }
+}

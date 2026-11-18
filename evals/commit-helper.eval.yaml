@@ -1,0 +1,34 @@
+name: conventional-commit-eval
+description: Evaluate that the conventional-commit skill generates standard commit messages from a git diff.
+type: capability
+
+defaults:
+  executor: copilot-sdk
+  runs: 1
+  timeout: 60s
+
+agent_environment:
+  skills:
+    - ../skills/conventional-commit
+  files:
+    - src: ./fixtures/sample.diff
+      dest: changes.diff
+
+scoring:
+  threshold: 1.0
+
+stimuli:
+  - name: generate-fix-commit
+    prompt: |
+      Generate a Git commit message using the conventional-commit skill for the changes in changes.diff.
+      Follow Conventional Commits strictly. Output only the commit message.
+    graders:
+      - type: skill-invocation
+        name: conventional-commit-invoked
+        config:
+          required:
+            - conventional-commit
+      - type: output-matches
+        name: matches-conventional-format
+        config:
+          pattern: '^fix(\([a-zA-Z0-9_-]+\))?:\s+[a-z0-9].+'

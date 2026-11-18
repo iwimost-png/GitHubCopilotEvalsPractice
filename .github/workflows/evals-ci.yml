@@ -1,0 +1,36 @@
+name: Copilot Evals CI
+
+on:
+  pull_request:
+    paths:
+      - 'evals/**'
+      - 'skills/**'
+      - '.github/workflows/evals-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evals:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      copilot-requests: write
+      pull-requests: write
+    concurrency:
+      group: evals-${{ github.workflow_ref }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Run GitHub Copilot Evals
+        uses: github/evals-action@v0
+        with:
+          working-directory: evals
+          suite: smoke
